@@ -1,6 +1,7 @@
 import 'package:news_app/config/app_bloc_observer.dart';
-import 'package:news_app/cubit/theme_cubit.dart';
-import 'package:news_app/home_page.dart';
+import 'package:news_app/cubit/navbar_cubit.dart';
+import 'package:news_app/settings/cubit/theme_cubit.dart';
+import 'package:news_app/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,6 +27,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ThemeCubit>(
           create: (context) => ThemeCubit(),
         ),
+        BlocProvider<NavbarCubit>(
+          create: (context) => NavbarCubit(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
@@ -33,7 +37,7 @@ class _MyAppState extends State<MyApp> {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             theme: state.selectedTheme,
-            home: const HomePage(),
+            home: const BottomNavBar(),
           );
         },
       ),
