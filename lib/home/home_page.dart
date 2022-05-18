@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:news_app/home/bloc/news_bloc.dart';
 import 'package:news_app/home/data/repository/news_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/home/view/details_page.dart';
 import 'package:news_app/home/view/homepage_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -66,14 +67,24 @@ class _HomePageState extends State<HomePage> {
               if (state is NewsLoadedState) {
                 return SmartRefresher(
                   controller: _refreshController,
-                  enablePullUp: true,
+                  enablePullUp: state.enablePullUp,
                   onRefresh: () => _onRefresh(context),
                   onLoading: () => _onLoading(context),
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: state.news.length,
                     itemBuilder: (context, index) {
-                      return HomePageView(articleInfo: state.news[index]);
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(
+                            newsDetails: state.news[index],
+                          )));
+                        },
+                        child: HomePageView(
+                          title: state.news[index].title!,
+                          imageUrl: state.news[index].urlToImage!,
+                        ),
+                      );
                     },
                   ),
                 );

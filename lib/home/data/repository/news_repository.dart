@@ -6,37 +6,44 @@ import 'package:news_app/home/bloc/news_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:news_app/home/data/model/news_model.dart';
 
-
 class NewsRepository {
-  int currentgPage = 1;
+  int currentPage = 1;
   List<Article>? articles = [];
   int totalPages = 10;
+  bool hasReachMax = false;
   BaseHttpClient baseClient = sl.get<BaseHttpClient>();
 
   Future<List<Article>?> getNews({bool isRefresh = false, required Emitter<NewsState> emit}) async {
     if (isRefresh) {
-      currentgPage = 1;
+      currentPage = 1;
+      hasReachMax = false;
     } else {
-      if (currentgPage >= totalPages) {
-        emit(NewsLoadMoreCompleteState());
+      if (currentPage >= totalPages) {
+        hasReachMax = true;
+        emit(NewsLoadedState(news: articles!, enablePullUp: false));
       }
     }
-    
-    String url = "${Constants.baseUrl}/everything?q=bitcoin&page=$currentgPage&pageSize=10&apiKey=${Constants.apiKey}";
+
+    String url = "${Constants.baseUrl}/everything?q=bitcoin&page=$currentPage&pageSize=10&apiKey=${Constants.apiKey}";
     log(url);
     final response = await baseClient.client.get(url);
-    if (response.statusCode == 200) {
-      final result = newsModelFromJson(response.data);
-      if (isRefresh) {
-        articles = result.articles!;
+    log('${response.statusCode}::::::::::::::::::::::::::::::');
+    if (!hasReachMax) {
+      if (response.statusCode == 200) {
+        final result = newsModelFromJson(response.data);
+        if (isRefresh) {
+          articles = result.articles!;
+        } else {
+          articles!.addAll(result.articles!);
+        }
+        currentPage++;
+        // totalPages = 10;
+        return articles;
       } else {
-        articles!.addAll(result.articles!);
+        throw Exception("Failed to load news");
       }
-      currentgPage++;
-      // totalPages = 10;
-      return articles;
     } else {
-      throw Exception("Failed to load news");
+      return articles;
     }
   }
 }

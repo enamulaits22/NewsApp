@@ -11,7 +11,8 @@ class NewsLoadingState extends NewsState {
 
 class NewsLoadedState extends NewsState {
   final List<Article> news;
-  NewsLoadedState(this.news);
+  final bool enablePullUp;
+  NewsLoadedState({required this.news, this.enablePullUp = true});
 
   @override
   List<Object?> get props => [news];
