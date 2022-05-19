@@ -52,6 +52,8 @@ dev_dependencies:
   get_it: ^7.2.0
   equatable: ^2.0.3
   pull_to_refresh: ^2.0.0
+  sqflite: ^2.0.2+1
+  path_provider: ^2.0.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,4 +1,5 @@
 import 'package:news_app/cubit/navbar_cubit.dart';
+import 'package:news_app/favorite/favorite_page.dart';
 import 'package:news_app/settings/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    HomePage(),
+    FavoritePage(),
     SettingsPage(),
   ];
 
