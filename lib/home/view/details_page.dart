@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/core/db/database_service.dart';
 import 'package:news_app/favorite/bloc/favorite_bloc.dart';
-import 'package:news_app/home/data/model/news_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailsPage extends StatefulWidget {
-  final Article newsDetails;
-  const DetailsPage({Key? key, required this.newsDetails}) : super(key: key);
+  // final Article newsDetails;
+  final String author;
+  final String title;
+  final String description;
+  final String url;
+  final String urlToImage;
+  final String publishedAt;
+  final String content;
+  const DetailsPage({
+    Key? key,
+    required this.author,
+    required this.title,
+    required this.description,
+    required this.url,
+    required this.urlToImage,
+    required this.publishedAt,
+    required this.content,
+  }) : super(key: key);
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -15,7 +30,7 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   @override
   void initState() {
-    BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.newsDetails.title!));
+    BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
     super.initState();
   }
   @override
@@ -30,28 +45,34 @@ class _DetailsPageState extends State<DetailsPage> {
         return Scaffold(
           appBar: AppBar(
             title: const Text('News Details'),
+            leading: IconButton(
+              onPressed: () {
+                BlocProvider.of<FavoriteNewsBloc>(context).add(LoadFavoriteNewsEvent());
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.keyboard_backspace)),
             actions: [
               isEmptyList ? IconButton(
                 onPressed: () {
                   DatabaseService.instance.addToNewsArticle(
-                    widget.newsDetails.author!,
-                    widget.newsDetails.title!,
-                    widget.newsDetails.description!,
-                    widget.newsDetails.url!,
-                    widget.newsDetails.urlToImage!,
-                    widget.newsDetails.publishedAt.toString(),
-                    widget.newsDetails.content!,
+                    widget.author,
+                    widget.title,
+                    widget.description,
+                    widget.url,
+                    widget.urlToImage,
+                    widget.publishedAt.toString(),
+                    widget.content,
                   );
-                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.newsDetails.title!));
+                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
                 },
                 icon: const Icon(Icons.favorite_border),
               ) : IconButton(
                 onPressed: () {
-                  DatabaseService.instance.deleteNewsArticleData(widget.newsDetails.title.toString());
+                  DatabaseService.instance.deleteNewsArticleData(widget.title.toString());
                   // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   //   content: Text("Removed from favorite"),
                   // ));
-                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.newsDetails.title!));
+                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
                 },
                 icon: const Icon(Icons.favorite),
               ),
@@ -74,7 +95,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(widget.newsDetails.urlToImage!),
+                      image: NetworkImage(widget.urlToImage),
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                     // color: Colors.redAccent,
@@ -82,16 +103,16 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  widget.newsDetails.author!,
+                  widget.author,
                   style: const TextStyle(fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  widget.newsDetails.title!,
+                  widget.title,
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 const SizedBox(height: 6),
-                Text(widget.newsDetails.description!),
+                Text(widget.description),
               ],
             ),
           ),

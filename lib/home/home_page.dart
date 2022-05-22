@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
   late final RefreshController _refreshController;
 
   @override
@@ -74,11 +74,23 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     itemCount: state.news.length,
                     itemBuilder: (context, index) {
+                      var newsInfo = state.news[index];
                       return InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(
-                            newsDetails: state.news[index],
-                          )));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailsPage(
+                                author: newsInfo.author!,
+                                title: newsInfo.title!,
+                                description: newsInfo.description!,
+                                url: newsInfo.url!,
+                                urlToImage: newsInfo.urlToImage!,
+                                publishedAt: newsInfo.publishedAt.toString(),
+                                content: newsInfo.content!,
+                              ),
+                            ),
+                          );
                         },
                         child: HomePageView(
                           title: state.news[index].title!,
@@ -101,4 +113,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

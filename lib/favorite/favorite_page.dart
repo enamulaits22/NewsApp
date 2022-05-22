@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/home/view/details_page.dart';
 import 'package:news_app/home/view/homepage_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/favorite/bloc/favorite_bloc.dart';
@@ -36,9 +37,28 @@ class _FavoritePageState extends State<FavoritePage> {
                 shrinkWrap: true,
                 itemCount: state.news.length,
                 itemBuilder: (context, index) {
-                  return HomePageView(
-                    title: state.news[index].title!,
-                    imageUrl: state.news[index].urlToImage!,
+                  var newsInfo = state.news[index];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsPage(
+                            author: newsInfo.author!,
+                            title: newsInfo.title!,
+                            description: newsInfo.description!,
+                            url: newsInfo.url!,
+                            urlToImage: newsInfo.urlToImage!,
+                            publishedAt: newsInfo.publishedAt.toString(),
+                            content: newsInfo.content!,
+                          ),
+                        ),
+                      );
+                    },
+                    child: HomePageView(
+                      title: newsInfo.title!,
+                      imageUrl: newsInfo.urlToImage!,
+                    ),
                   );
                 },
               );

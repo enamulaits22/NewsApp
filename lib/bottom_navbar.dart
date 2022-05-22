@@ -14,6 +14,9 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+
+PageController pageController = PageController(initialPage: 0);
+
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     FavoritePage(),
@@ -31,8 +34,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return BlocBuilder<NavbarCubit, NavbarState>(
       builder: (context, state) {
         return Scaffold(
-          body: Center(
-            child: _widgetOptions.elementAt(state.index),
+          body: PageView(
+            controller: pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: _widgetOptions,
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
@@ -53,10 +58,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
             selectedItemColor: Colors.amber[800],
             onTap: (index) {
               BlocProvider.of<NavbarCubit>(context).onItemTapped(index);
+              onPageChange(index);
             },
           ),
         );
       },
     );
+  }
+
+ void onPageChange(int index){
+    pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 }
