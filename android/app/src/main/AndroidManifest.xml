@@ -2,7 +2,7 @@
     package="com.example.dynamic_theme">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="dynamic_theme"
+        android:label="news_app_22_05-22_dev"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

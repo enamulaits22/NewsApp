@@ -30,7 +30,9 @@ class _FavoritePageState extends State<FavoritePage> {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is FavoriteNewsLoadedState) {
-              return ListView.builder(
+              return state.news.isEmpty
+              ? const Center(child: Text('No News found!'))
+              : ListView.builder(
                 shrinkWrap: true,
                 itemCount: state.news.length,
                 itemBuilder: (context, index) {
