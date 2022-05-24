@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/core/db/database_service.dart';
 import 'package:news_app/favorite/bloc/favorite_bloc.dart';
@@ -83,22 +84,23 @@ class _DetailsPageState extends State<DetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Container(
-                //   height: 200,
-                //   width: 200,
-                //   decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
-                //   child: Image.network('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg', fit: BoxFit.cover,),
-                // ),
-                Container(
-                  width: size.width,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(widget.urlToImage),
-                    ),
-                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                    // color: Colors.redAccent,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  // decoration: BoxDecoration(
+                  //   image: DecorationImage(
+                  //     fit: BoxFit.cover,
+                  //     image: NetworkImage(widget.urlToImage),
+                  //   ),
+                  //   borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  //   // color: Colors.redAccent,
+                  // ),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.urlToImage,
+                    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
+                    fit: BoxFit.fill,
+                    width: size.width,
+                    height: 200.0,
                   ),
                 ),
                 const SizedBox(height: 8),

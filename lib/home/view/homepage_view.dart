@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class HomePageView extends StatelessWidget {
@@ -17,7 +18,13 @@ class HomePageView extends StatelessWidget {
           SizedBox(
             height: 100,
             width: 100,
-            child: Image.network(imageUrl!, fit: BoxFit.fill),
+            // child: Image.network(imageUrl!, fit: BoxFit.fill),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl!,
+              placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => const Center(child: Icon(Icons.error)),
+              fit: BoxFit.fill,
+            ),
           ),
           const SizedBox(width: 8),
           Expanded(
