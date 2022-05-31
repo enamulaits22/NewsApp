@@ -1,4 +1,4 @@
-part of 'navbar_cubit.dart';
+part of 'navbar_notifier.dart';
 
 class NavbarState {
   int index;

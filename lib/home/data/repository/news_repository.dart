@@ -2,8 +2,7 @@ import 'dart:developer';
 import 'package:news_app/config/utils/constants.dart';
 import 'package:news_app/core/di/dependency_injection.dart';
 import 'package:news_app/core/network/http_client.dart';
-import 'package:news_app/home/bloc/news_bloc.dart';
-import 'package:bloc/bloc.dart';
+import 'package:news_app/home/news_provider/news_notifier.dart';
 import 'package:news_app/home/data/model/news_model.dart';
 
 class NewsRepository {
@@ -13,14 +12,14 @@ class NewsRepository {
   bool hasReachMax = false;
   BaseHttpClient baseClient = sl.get<BaseHttpClient>();
 
-  Future<List<Article>?> getNews({bool isRefresh = false, required Emitter<NewsState> emit}) async {
+  Future<List<Article>?> getNews({bool isRefresh = false, required NewsState state}) async {
     if (isRefresh) {
       currentPage = 1;
       hasReachMax = false;
     } else {
       if (currentPage >= totalPages) {
         hasReachMax = true;
-        emit(NewsLoadedState(news: articles!, enablePullUp: false));
+        state = NewsLoadedState(news: articles!, enablePullUp: false);
       }
     }
 

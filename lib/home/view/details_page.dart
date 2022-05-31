@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app/core/db/database_service.dart';
-import 'package:news_app/favorite/bloc/favorite_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/favorite/fav_news_provider/fav_news_notifier.dart';
 
-class DetailsPage extends StatefulWidget {
+class DetailsPage extends ConsumerStatefulWidget {
   // final Article newsDetails;
   final String author;
   final String title;
@@ -25,21 +25,22 @@ class DetailsPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DetailsPage> createState() => _DetailsPageState();
+  ConsumerState<DetailsPage> createState() => _DetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _DetailsPageState extends ConsumerState<DetailsPage> {
   @override
   void initState() {
-    BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
+    ref.read(favoriteNewsProvider.notifier).onCheckFavoriteNews(widget.title);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     bool isEmptyList = false;
-    return BlocBuilder<FavoriteNewsBloc, FavoriteNewsState>(
-      builder: (context, state) {
+    return Consumer(
+      builder: (context, ref, child) {
+        FavoriteNewsState state = ref.watch(favoriteNewsProvider);
         if (state is CheckFavoriteNewsLoadedState) {
           isEmptyList = state.news.isEmpty;
         }
@@ -48,10 +49,11 @@ class _DetailsPageState extends State<DetailsPage> {
             title: const Text('News Details'),
             leading: IconButton(
               onPressed: () {
-                BlocProvider.of<FavoriteNewsBloc>(context).add(LoadFavoriteNewsEvent());
+                ref.read(favoriteNewsProvider.notifier).onLoadFavoriteNews();
                 Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.keyboard_backspace)),
+              icon: const Icon(Icons.keyboard_backspace),
+            ),
             actions: [
               isEmptyList ? IconButton(
                 onPressed: () {
@@ -64,7 +66,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     widget.publishedAt.toString(),
                     widget.content,
                   );
-                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
+                  ref.read(favoriteNewsProvider.notifier).onCheckFavoriteNews(widget.title);
                 },
                 icon: const Icon(Icons.favorite_border),
               ) : IconButton(
@@ -73,7 +75,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   //   content: Text("Removed from favorite"),
                   // ));
-                  BlocProvider.of<FavoriteNewsBloc>(context).add(CheckFavoriteNewsEvent(title: widget.title));
+                  ref.read(favoriteNewsProvider.notifier).onCheckFavoriteNews(widget.title);
                 },
                 icon: const Icon(Icons.favorite),
               ),

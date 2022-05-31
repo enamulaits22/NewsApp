@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/settings/cubit/theme_cubit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:news_app/settings/theme_provider/theme_notifier.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,16 +20,27 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Change Theme'),
-                  BlocBuilder<ThemeCubit, ThemeState>(
-                    builder: (context, state) {
+                  // BlocBuilder<ThemeCubit, ThemeState>(
+                  //   builder: (context, state) {
+                  //     return Switch(
+                  //       value: state.isSwitchOn,
+                  //       onChanged: (isEnable) {
+                  //         BlocProvider.of<ThemeCubit>(context).toggleSwitch(isEnable);
+                  //       },
+                  //     );
+                  //   },
+                  // ),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      ThemeState state = ref.watch(themeProvider);
                       return Switch(
                         value: state.isSwitchOn,
                         onChanged: (isEnable) {
-                          BlocProvider.of<ThemeCubit>(context).toggleSwitch(isEnable);
+                          ref.read(themeProvider.notifier).toggleSwitch(isEnable);
                         },
                       );
                     },
-                  ),
+                  )
                 ],
               ),
             ),

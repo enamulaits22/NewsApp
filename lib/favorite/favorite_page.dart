@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:news_app/home/view/details_page.dart';
 import 'package:news_app/home/view/homepage_view.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/favorite/bloc/favorite_bloc.dart';
+import 'package:news_app/favorite/fav_news_provider/fav_news_notifier.dart';
 
-class FavoritePage extends StatefulWidget {
+class FavoritePage extends StatelessWidget {
   const FavoritePage({Key? key}) : super(key: key);
 
-  @override
-  State<FavoritePage> createState() => _FavoritePageState();
-}
-
-class _FavoritePageState extends State<FavoritePage> {
-  @override
-  void initState() {
-    BlocProvider.of<FavoriteNewsBloc>(context).add(LoadFavoriteNewsEvent());
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +15,9 @@ class _FavoritePageState extends State<FavoritePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: BlocBuilder<FavoriteNewsBloc, FavoriteNewsState>(
-          builder: (context, state) {
+        child: Consumer(
+          builder: (context, ref, child) {
+            FavoriteNewsState state = ref.watch(favoriteNewsProvider);
             if (state is FavoriteNewsLoadingState) {
               return const Center(child: CircularProgressIndicator());
             }
