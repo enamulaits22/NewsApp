@@ -1,19 +1,18 @@
-import 'package:news_app/cubit/navbar_cubit.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:news_app/navbar_provider/navbar_notifier.dart';
 import 'package:news_app/favorite/favorite_page.dart';
-import 'package:news_app/settings/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/home/home_page.dart';
 import 'package:news_app/settings/settings_page.dart';
 
-class BottomNavBar extends StatefulWidget {
+class BottomNavBar extends ConsumerStatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
 
   @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
+  ConsumerState<BottomNavBar> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
+class _BottomNavBarState extends ConsumerState<BottomNavBar> {
 
 PageController pageController = PageController(initialPage: 0);
 
@@ -24,16 +23,9 @@ PageController pageController = PageController(initialPage: 0);
   ];
 
   @override
-  void initState() {
-    BlocProvider.of<ThemeCubit>(context).getThemeValueFromSharedPref();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavbarCubit, NavbarState>(
-      builder: (context, state) {
-        return Scaffold(
+    int state = ref.watch(navProvider);
+    return Scaffold(
           body: PageView(
             controller: pageController,
             physics: const NeverScrollableScrollPhysics(),
@@ -54,16 +46,14 @@ PageController pageController = PageController(initialPage: 0);
                 label: 'Settings',
               ),
             ],
-            currentIndex: state.index,
+            currentIndex: state,
             selectedItemColor: Colors.amber[800],
             onTap: (index) {
-              BlocProvider.of<NavbarCubit>(context).onItemTapped(index);
+              ref.read(navProvider.notifier).state = index;
               onPageChange(index);
             },
           ),
         );
-      },
-    );
   }
 
  void onPageChange(int index){

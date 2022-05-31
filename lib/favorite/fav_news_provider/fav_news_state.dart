@@ -1,4 +1,4 @@
-part of 'favorite_bloc.dart';
+part of 'fav_news_notifier.dart';
 
 @immutable
 abstract class FavoriteNewsState extends Equatable{}
